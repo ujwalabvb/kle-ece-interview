@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KLE Tech — ECE Faculty Interview System</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4f2ee;color:#111;min-height:100vh}
+#app{min-height:100vh}
+.scr{display:flex;flex-direction:column;align-items:center;padding:24px 16px;background:#f4f2ee;min-height:100vh}
+.card{background:#fff;border-radius:12px;border:1px solid #e0ddd8;width:100%;max-width:600px;overflow:hidden;margin-top:10px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.bnr{background:#042C53;padding:28px 24px 22px;text-align:center;border-bottom:3px solid #BA7517}
+.bnr .sub{font-size:10px;letter-spacing:2px;color:#FAC775;font-weight:600;text-transform:uppercase;margin-bottom:8px}
+.bnr h1{font-size:1.25rem;font-weight:600;color:#fff;line-height:1.45;margin-bottom:5px}
+.bnr .dp{font-size:0.82rem;color:#b0c4de}
+.bd{padding:24px 24px 20px}
+.fb{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:0.83rem;color:#1e3a5f;line-height:1.85}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:22px}
+.pb{background:#f0eeea;border-radius:8px;padding:13px 8px;text-align:center;border-top:3px solid #ddd}
+.pb.a{border-top-color:#0369a1}.pb.b{border-top-color:#BA7517}.pb.c{border-top-color:#5b21b6}
+.pn{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:#444;margin-bottom:3px}
+.pv{font-size:1.2rem;font-weight:700;color:#042C53;margin-bottom:2px}
+.pd{font-size:0.73rem;color:#666;line-height:1.35}
+.nt{font-size:.75rem;color:#888;text-align:center;margin-top:11px}
+.akey{background:#fff8e1;border:1px solid #ffd54f;border-radius:8px;padding:13px 14px;margin-bottom:18px}
+.akey label{display:block;font-size:10px;font-weight:600;color:#7c5b00;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.akey input{border-color:#ffd54f}
+.akey input:focus{border-color:#f59f00}
+.akey .hint{font-size:11px;color:#92703a;margin-top:5px}
+.btn{display:block;width:100%;padding:13px;border-radius:8px;font-size:.92rem;font-weight:600;cursor:pointer;border:none;transition:background .15s;text-align:center;margin-top:6px}
+.bp{background:#042C53;color:#fff}.bp:hover{background:#0C447C}.bp:disabled{background:#aaa;cursor:not-allowed}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:10px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input,select{width:100%;padding:9px 11px;border:1.5px solid #ddd;border-radius:8px;font-size:.87rem;color:#111;background:#fff;outline:none;transition:border-color .15s}
+input:focus,select:focus{border-color:#042C53}
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+.sc{padding:11px 12px;border:1.5px solid #e0ddd8;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:8px;background:#fff;transition:all .12s}
+.sc:hover{border-color:#042C53;background:#f0eeea}
+.sc.on{border-color:#042C53;background:#e6f1fb}
+.sn{font-size:10px;font-weight:600;color:#aaa;min-width:18px}
+.sl{font-size:.82rem;font-weight:500;color:#111;line-height:1.3}
+.ls{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#f4f2ee}
+.sp2{width:46px;height:46px;border:3px solid #ddd;border-top-color:#042C53;border-radius:50%;animation:sp .75s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.lt{font-size:1.05rem;font-weight:600;color:#042C53}
+.lsb{font-size:.84rem;color:#666;text-align:center;max-width:300px;line-height:1.6}
+.it{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f4f2ee;padding:20px}
+.ic{background:#fff;border-radius:12px;border:1px solid #e0ddd8;max-width:460px;width:100%;padding:38px 28px;text-align:center}
+.ick{font-size:3rem;margin-bottom:12px}
+.ic h2{font-size:1.1rem;font-weight:700;color:#042C53;margin-bottom:7px}
+.ich{display:inline-block;background:#e0f2fe;color:#0369a1;font-size:1rem;font-weight:700;padding:7px 22px;border-radius:20px;margin:9px 0 16px}
+.ic p{font-size:.85rem;color:#555;line-height:1.75;margin-bottom:22px}
+.qs{min-height:100vh;display:flex;flex-direction:column;background:#f4f2ee}
+.qt{background:#042C53;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:2.5px solid #BA7517}
+.pi{font-size:10px;font-weight:600;padding:3px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;color:#fff}
+.pi-a{background:#0369a1}.pi-b{background:#BA7517}.pi-c{background:#5b21b6}
+.qct{font-size:.81rem;color:#b0c4de}
+.pbar{height:4px;background:rgba(255,255,255,.2)}
+.pf{height:100%;background:#BA7517;transition:width .4s}
+.qb{flex:1;display:flex;flex-direction:column;align-items:center;padding:18px 14px;max-width:680px;margin:0 auto;width:100%}
+.trow{display:flex;align-items:center;gap:10px;align-self:flex-end;margin-bottom:13px}
+.th{font-size:10px;color:#999;text-align:right;line-height:1.5}
+.tring{width:58px;height:58px;border-radius:50%;border:3px solid;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cg{border-color:#16a34a;color:#16a34a}
+.cy{border-color:#d97706;color:#d97706}
+.cr{border-color:#dc2626;color:#dc2626;animation:pu .6s ease-in-out infinite}
+@keyframes pu{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.tsec{font-size:1.25rem;font-weight:700;line-height:1}
+.tlbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.qcd{background:#fff;border-radius:12px;border:1px solid #e0ddd8;padding:22px;width:100%;margin-bottom:12px}
+.badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:11px}
+.bb{background:#e0f2fe;color:#0369a1}.bc{background:#fef3c7;color:#92400e}.ba{background:#dcfce7;color:#166534}.bap{background:#ede9fe;color:#5b21b6}
+.qtx{font-size:.97rem;line-height:1.65;color:#111;margin-bottom:17px;font-weight:500}
+.opts{display:flex;flex-direction:column;gap:7px}
+.ob{padding:12px 13px;border:1.5px solid #e0ddd8;border-radius:8px;text-align:left;cursor:pointer;background:#fff;font-size:.88rem;display:flex;align-items:flex-start;gap:9px;width:100%;transition:all .12s}
+.ob:hover{border-color:#042C53;background:#f0eeea}
+.ob.on{border-color:#042C53;border-width:2px;background:#e6f1fb}
+.ol{font-weight:700;color:#0C447C;min-width:16px;flex-shrink:0}
+.ot{color:#111;line-height:1.4;text-align:left}
+.srow{display:flex;justify-content:flex-end;margin-top:8px}
+.sbtn{background:#042C53;color:#fff;border:none;padding:11px 28px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer}
+.sbtn:hover{background:#0C447C}.sbtn:disabled{background:#aaa;cursor:not-allowed}
+.rscr{background:#f4f2ee;padding:16px;min-height:100vh}
+.rin{max-width:680px;margin:0 auto}
+.rhdr{background:#042C53;border-radius:12px;padding:22px;text-align:center;margin-bottom:12px;border-bottom:3px solid #BA7517}
+.rhdr h2{font-size:1.1rem;font-weight:600;color:#FAC775;margin-bottom:4px}
+.rhdr p{font-size:.81rem;color:#b0c4de}
+.rs{background:#fff;border-radius:12px;border:1px solid #e0ddd8;padding:20px;margin-bottom:11px}
+.rs h3{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:#0C447C;margin-bottom:13px;padding-bottom:7px;border-bottom:1px solid #f0eeea}
+.sg2{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.sbox{background:#f0eeea;border-radius:8px;padding:13px 7px;text-align:center}
+.sv{font-size:1.3rem;font-weight:700;color:#042C53}
+.slb{font-size:10px;color:#666;margin-top:2px}
+.para{font-size:.86rem;line-height:1.75;color:#555}
+.dlbl{font-size:11px;font-weight:600;color:#111;margin:10px 0 5px}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600}
+.ts{background:#dcfce7;color:#166534}.tg{background:#fee2e2;color:#991b1b}
+.mbadge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-weight:600;font-size:.9rem;margin-bottom:8px}
+.my{background:#dcfce7;color:#166534}.mp{background:#fef3c7;color:#92400e}.mn{background:#fee2e2;color:#991b1b}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
+.mc{border:1px solid #e0ddd8;border-top-width:3px;border-radius:8px;padding:12px}
+.mc h4{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.mc ul{padding-left:13px}
+.mc li{font-size:.78rem;color:#555;margin-bottom:3px;line-height:1.4}
+.rbox{padding:13px;border-radius:8px;margin-top:7px;border-left:3px solid}
+.rhr{background:#dcfce7;border-left-color:#16a34a}.rok{background:#e0f2fe;border-left-color:#0369a1}
+.rco{background:#fef3c7;border-left-color:#d97706}.rno{background:#fee2e2;border-left-color:#dc2626}
+.rt{font-size:.91rem;font-weight:700;margin-bottom:3px}
+.rb{font-size:.82rem;color:#555;line-height:1.55}
+.arow{display:flex;justify-content:center;gap:10px;padding:8px 0 26px;flex-wrap:wrap}
+.adl{background:#042C53;color:#fff;border:none;padding:13px 28px;border-radius:8px;font-size:.92rem;font-weight:600;cursor:pointer}
+.adl:hover{background:#0C447C}
+.anw{background:#fff;color:#042C53;border:1.5px solid #042C53;padding:13px 28px;border-radius:8px;font-size:.92rem;font-weight:600;cursor:pointer}
+.anw:hover{background:#f0eeea}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var SUBS=["Signals & Systems","Digital Electronics","Analog Electronics","Communication Systems","VLSI Design","Microprocessors & Microcontrollers","Control Systems","Electromagnetic Field Theory","Digital Signal Processing","Embedded Systems & IoT"];
+var DEGS=["B.E. / B.Tech (Electronics & Communication)","M.E. / M.Tech (Electronics)","M.E. / M.Tech (Communication)","M.E. / M.Tech (VLSI Design)","M.E. / M.Tech (Embedded Systems)","Ph.D. (Electronics)","Ph.D. (Communication)","Ph.D. (Signal Processing)","Other"];
+
+var apiKey='', ph='welcome', cd=null, sub='', qA=[], qBC=[];
+var cq=0, sel=null, aA=[], aBC=[], rep=null, tmr=null, tv=60, scA=0;
+
+function xe(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function so(s){return s.replace(/^[A-Da-d][\.\)]\s*/,'').trim();}
+function pj(t){
+  t=t.trim().replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
+  var a=t.match(/\[[\s\S]*\]/);if(a)try{return JSON.parse(a[0]);}catch(e){}
+  var o=t.match(/\{[\s\S]*\}/);if(o)try{return JSON.parse(o[0]);}catch(e){}
+  return JSON.parse(t);
+}
+async function ai(p,m){
+  var res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:m||4000,messages:[{role:'user',content:p}]})
+  });
+  var d=await res.json();
+  if(d.error)throw new Error(d.error.message);
+  return d.content[0].text;
+}
+
+async function doA(){
+  try{
+    var t=await ai('Generate exactly 10 multiple-choice questions for an ECE faculty panel interview.\nTopic: General Engineering for ECE — circuit theory, semiconductor devices, network theorems, engineering mathematics, basic signals and systems.\nDistribution: exactly 3 type "basic", 3 type "conceptual", 4 type "applied".\nRules: concept-level only, no heavy calculations, postgraduate faculty level, 4 options prefixed A. B. C. D.\nReturn ONLY a JSON array, no markdown:\n[{"type":"basic","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0}]',4000);
+    qA=pj(t).map(function(q){return Object.assign({},q,{part:'A'});});
+    cq=0;aA=[];sel=null;ph='qA';render();
+  }catch(er){alert('Part A generation failed.\n\nError: '+er.message+'\n\nPlease check your API key and try again.');ph='welcome';render();}
+}
+async function doBC(){
+  try{
+    var tb=await ai('Generate exactly 10 multiple-choice questions for an ECE faculty interview.\nTopic: '+sub+'\nDistribution: exactly 3 type "basic", 3 type "conceptual", 4 type "applied".\nRules: concept-level only, no heavy calculations, postgraduate faculty level.\nReturn ONLY a JSON array, no markdown:\n[{"type":"basic","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0}]',4000);
+    var tc=await ai('Generate exactly 5 aptitude MCQs for an ECE faculty interview.\nTopic: Logical reasoning, analytical thinking, number patterns — concept-based, minimal arithmetic.\nReturn ONLY a JSON array, no markdown:\n[{"type":"aptitude","question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0}]',3000);
+    var qb=pj(tb).map(function(q){return Object.assign({},q,{part:'B'});});
+    var qc=pj(tc).map(function(q){return Object.assign({},q,{part:'C'});});
+    qBC=qb.concat(qc);cq=0;aBC=[];sel=null;ph='qBC';render();
+  }catch(er){alert('Question generation failed.\n\nError: '+er.message);ph='subSel';render();}
+}
+async function doRep(){
+  try{
+    var allQ=qA.concat(qBC),allA=aA.concat(aBC);
+    var sA=qA.filter(function(q,i){return aA[i].s===q.correct;}).length;
+    var sB=qBC.slice(0,10).filter(function(q,i){return aBC[i].s===q.correct;}).length;
+    var sC=qBC.slice(10).filter(function(q,i){return aBC[i+10]&&aBC[i+10].s===q.correct;}).length;
+    var tot=sA+sB+sC,avgT=Math.round(allA.reduce(function(a,x){return a+x.t;},0)/25),to=allA.filter(function(a){return a.s===null;}).length;
+    var pf=allQ.map(function(q,i){return{part:q.part,type:q.type,q:q.question,given:allA[i].s!==null?so(q.options[allA[i].s]):'[timed out]',correct:so(q.options[q.correct]),ok:allA[i].s===q.correct,sec:allA[i].t};});
+    var txt=await ai('Senior ECE faculty evaluator at KLE Technological University.\nCANDIDATE: '+cd.name+' | '+cd.degree+' | Teaching: '+cd.ty+'yr | Industry: '+cd.iy+'yr | '+cd.nat+'\nPart B Subject: '+sub+'\nSCORES: A='+sA+'/10, B='+sB+'/10, C='+sC+'/5, Total='+tot+'/25, AvgTime='+avgT+'s, TimedOut='+to+'\nRESPONSES: '+JSON.stringify(pf)+'\nReturn ONLY valid JSON:\n{"executiveSummary":"2-3 sentences","partAAnalysis":"paragraph","partBAnalysis":"paragraph","partCAnalysis":"paragraph","timeManagement":"paragraph","strengths":["s1","s2","s3"],"gaps":["g1","g2","g3"],"mouldability":"Yes|Partially|No","mouldabilityReason":"explanation","month1":["a1","a2"],"month2":["a1","a2"],"month3":["a1","a2"],"recommendation":"Highly Recommended|Recommended|Recommended with Conditions|Not Recommended","recommendationReason":"justification"}',2500);
+    rep=Object.assign({},pj(txt),{sA:sA,sB:sB,sC:sC,total:tot,avgTime:avgT,timedOut:to});
+    ph='report';render();
+  }catch(er){alert('Report generation failed.\n\nError: '+er.message);}
+}
+
+function startT(){
+  clearInterval(tmr);tv=60;
+  var el=document.getElementById('tv');if(el)el.textContent='60';
+  setC(60);
+  tmr=setInterval(function(){tv--;var e=document.getElementById('tv');if(e)e.textContent=tv;setC(tv);if(tv<=0){clearInterval(tmr);adv(null);}},1000);
+}
+function setC(v){var r=document.getElementById('tring');if(!r)return;r.className='tring '+(v>30?'cg':v>10?'cy':'cr');}
+function adv(s2){
+  clearInterval(tmr);
+  var spent=s2===null?60:Math.max(1,60-tv);
+  sel=null;
+  if(ph==='qA'){
+    aA.push({s:s2,t:spent});
+    if(aA.length>=qA.length){scA=qA.filter(function(q,i){return aA[i].s===q.correct;}).length;ph='aDone';render();}
+    else{cq++;render();}
+  } else if(ph==='qBC'){
+    aBC.push({s:s2,t:spent});
+    if(aBC.length>=qBC.length){ph='analyzing';render();doRep();}
+    else{cq++;render();}
+  }
+}
+
+function rWelcome(){
+  document.getElementById('app').innerHTML=
+  '<div class="scr"><div class="card">'+
+  '<div class="bnr"><div class="sub">KLE Technological University, Hubballi</div>'+
+  '<h1>Welcome to KLE Technological University</h1>'+
+  '<div class="dp">Department of Electronics &amp; Communication Engineering</div></div>'+
+  '<div class="bd">'+
+  '<div class="akey"><label>&#128273; Anthropic API Key (required)</label>'+
+  '<input id="ak" type="password" placeholder="sk-ant-..." oninput="ckw()"/>'+
+  '<div class="hint">Get your key at <strong>console.anthropic.com</strong> &rarr; API Keys. Your key is never stored.</div></div>'+
+  '<div class="fb"><strong>Interview flow:</strong><br>'+
+  '1. Enter your API key above<br>'+
+  '2. Fill in candidate details<br>'+
+  '3. <strong>Part A</strong> &mdash; 10 General Engineering questions (auto-starts)<br>'+
+  '4. Choose your <strong>Part B subject</strong> after Part A<br>'+
+  '5. <strong>Part B</strong> &mdash; 10 questions on chosen subject + <strong>Part C</strong> &mdash; 5 Aptitude<br>'+
+  '6. Detailed PDF report</div>'+
+  '<div class="pg">'+
+  '<div class="pb a"><div class="pn">Part A</div><div class="pv">10 Q</div><div class="pd">General Engineering<br><span style="font-size:10px;color:#0369a1;font-weight:600">Starts first</span></div></div>'+
+  '<div class="pb b"><div class="pn">Part B</div><div class="pv">10 Q</div><div class="pd">Your ECE subject<br><span style="font-size:10px;color:#BA7517;font-weight:600">After Part A</span></div></div>'+
+  '<div class="pb c"><div class="pn">Part C</div><div class="pv">5 Q</div><div class="pd">Aptitude<br><span style="font-size:10px;color:#5b21b6;font-weight:600">Follows Part B</span></div></div>'+
+  '</div>'+
+  '<button id="wb" class="btn bp" disabled onclick="ph=\'info\';render()">Begin Interview &rarr;</button>'+
+  '<div class="nt">25 questions &middot; 25 minutes &middot; PDF report at end</div>'+
+  '</div></div></div>';
+}
+function ckw(){var k=document.getElementById('ak'),b=document.getElementById('wb');if(k&&b){apiKey=k.value.trim();b.disabled=!apiKey;}}
+
+function rInfo(){
+  var opts=DEGS.map(function(d){return'<option value="'+xe(d)+'">'+xe(d)+'</option>';}).join('');
+  document.getElementById('app').innerHTML=
+  '<div class="scr"><div class="card">'+
+  '<div class="bnr"><div class="sub">Step 1 &mdash; Candidate Details</div>'+
+  '<h1>Candidate Information</h1><div class="dp">Part A begins immediately after submission</div></div>'+
+  '<div class="bd">'+
+  '<div class="fg"><label>Full Name</label><input id="fn" placeholder="Candidate\'s full name" oninput="ci()"/></div>'+
+  '<div class="fg"><label>Highest Degree</label><select id="fd" onchange="ci()"><option value="">Select degree&hellip;</option>'+opts+'</select></div>'+
+  '<div class="fr">'+
+  '<div class="fg"><label>Teaching Experience (Years)</label><input id="fty" type="number" min="0" max="40" placeholder="0" oninput="ci()"/></div>'+
+  '<div class="fg"><label>Industry Experience (Years)</label><input id="fiy" type="number" min="0" max="40" placeholder="0" oninput="ci()"/></div>'+
+  '</div>'+
+  '<div class="fg"><label>Nationality</label><input id="fna" placeholder="e.g. Indian" oninput="ci()"/></div>'+
+  '<button id="ib" class="btn bp" disabled onclick="si()">Submit &amp; Start Part A &rarr;</button>'+
+  '</div></div></div>';
+}
+function ci(){var n=document.getElementById('fn'),d=document.getElementById('fd'),ty=document.getElementById('fty'),iy=document.getElementById('fiy'),na=document.getElementById('fna'),b=document.getElementById('ib');if(b)b.disabled=!(n&&n.value.trim()&&d&&d.value&&ty&&ty.value!==''&&iy&&iy.value!==''&&na&&na.value.trim());}
+function si(){cd={name:document.getElementById('fn').value.trim(),degree:document.getElementById('fd').value,ty:document.getElementById('fty').value,iy:document.getElementById('fiy').value,nat:document.getElementById('fna').value.trim()};ph='genA';render();setTimeout(doA,100);}
+
+function rLoad(ti,su2){document.getElementById('app').innerHTML='<div class="ls"><div class="sp2"></div><div class="lt">'+xe(ti)+'</div><div class="lsb">'+xe(su2)+'</div></div>';}
+
+function rQ(q,label,pilClass,qnum,total,overallPct){
+  var bc={basic:'bb',conceptual:'bc',applied:'ba',aptitude:'bap'}[q.type]||'bb',L=['A','B','C','D'];
+  var opts=q.options.map(function(o,i){return'<button class="ob" id="o'+i+'" onclick="po(this,'+i+')"><span class="ol">'+L[i]+'.</span><span class="ot">'+xe(so(o))+'</span></button>';}).join('');
+  document.getElementById('app').innerHTML=
+  '<div class="qs"><div class="qt"><span class="pi '+pilClass+'">'+label+'</span><span class="qct">Q '+qnum+' of '+total+' &nbsp;|&nbsp; Overall '+(10*(pilClass!=='pi-a'?1:0)+cq+1)+'/25</span></div>'+
+  '<div class="pbar"><div class="pf" style="width:'+overallPct+'%"></div></div>'+
+  '<div class="qb"><div class="trow"><div class="th"><div>Time</div><div>Left</div></div>'+
+  '<div class="tring cg" id="tring"><span class="tsec" id="tv">60</span><span class="tlbl">sec</span></div></div>'+
+  '<div class="qcd"><span class="badge '+bc+'">'+xe(q.type)+'</span>'+
+  '<div class="qtx">Q'+qnum+'. '+xe(q.question)+'</div>'+
+  '<div class="opts">'+opts+'</div></div>'+
+  '<div class="srow"><button class="sbtn" id="sb" disabled onclick="sa()">Submit &amp; Next &rarr;</button></div>'+
+  '</div></div>';
+}
+
+function rADone(){document.getElementById('app').innerHTML='<div class="it"><div class="ic"><div class="ick" style="color:#16a34a">&#10003;</div><h2>Part A Complete!</h2><div class="ich">Score: '+scA+' / 10</div><p>General Engineering section is done.<br>Now choose your <strong>Part B specialization</strong>.<br>10 subject questions + 5 Aptitude will follow.</p><button class="btn bp" style="max-width:320px;margin:0 auto" onclick="ph=\'subSel\';render()">Choose Part B Subject &rarr;</button></div></div>';}
+
+function rSub(){
+  var cards=SUBS.map(function(s,i){return'<div class="sc" id="sc'+i+'" onclick="ps(this,'+i+')"><span class="sn">'+String(i+1).padStart(2,'0')+'</span><span class="sl">'+xe(s)+'</span></div>';}).join('');
+  document.getElementById('app').innerHTML=
+  '<div class="scr"><div class="card">'+
+  '<div class="bnr"><div class="sub">Step 3 &mdash; Specialization</div>'+
+  '<h1>Choose Your Part B Subject</h1><div class="dp">10 questions on your subject + 5 Aptitude follow automatically</div></div>'+
+  '<div class="bd"><div class="sg">'+cards+'</div>'+
+  '<button id="ssb" class="btn bp" disabled onclick="cs()">Generate Part B &amp; C Questions &rarr;</button>'+
+  '</div></div></div>';
+}
+
+function rReport(){
+  var r=rep,dt=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var mc={Yes:'my',Partially:'mp',No:'mn'}[r.mouldability]||'mp';
+  var rc={'Highly Recommended':'rhr','Recommended':'rok','Recommended with Conditions':'rco','Not Recommended':'rno'}[r.recommendation]||'rok';
+  var boxes=[{l:'Part A',v:r.sA+'/10'},{l:'Part B',v:r.sB+'/10'},{l:'Part C',v:r.sC+'/5'},{l:'Total',v:r.total+'/25 ('+Math.round(r.total/25*100)+'%)'}].map(function(x){return'<div class="sbox"><div class="sv">'+x.v+'</div><div class="slb">'+x.l+'</div></div>';}).join('');
+  var stags=r.strengths.map(function(s){return'<span class="tag ts">'+xe(s)+'</span>';}).join('');
+  var gtags=r.gaps.map(function(g){return'<span class="tag tg">'+xe(g)+'</span>';}).join('');
+  var mplan=r.mouldability!=='No'?'<div class="dlbl" style="margin-top:11px">3-month development plan</div><div class="mgrid">'+[{l:'Month 1',s:'Priority',items:r.month1,c:'#042C53'},{l:'Month 2',s:'Development',items:r.month2,c:'#185FA5'},{l:'Month 3',s:'Consolidation',items:r.month3,c:'#378ADD'}].map(function(m){return'<div class="mc" style="border-top-color:'+m.c+'"><h4 style="color:'+m.c+'">'+m.l+' — '+m.s+'</h4><ul>'+m.items.map(function(it){return'<li>'+xe(it)+'</li>';}).join('')+'</ul></div>';}).join('')+'</div>':'';
+  var analysis=[['Part A — General Engineering',r.partAAnalysis],['Part B — '+sub,r.partBAnalysis],['Part C — Aptitude',r.partCAnalysis],['Time management',r.timeManagement]].map(function(x){return'<div style="margin-bottom:12px"><div class="dlbl">'+xe(x[0])+'</div><p class="para">'+xe(x[1])+'</p></div>';}).join('');
+  document.getElementById('app').innerHTML=
+  '<div class="rscr"><div class="rin">'+
+  '<div class="rhdr"><h2>Interview Evaluation Report</h2><p>'+xe(cd.name)+' — '+xe(cd.degree)+'</p><p style="font-size:.77rem;opacity:.7;margin-top:2px">'+xe(dt)+' &middot; Part B: '+xe(sub)+'</p></div>'+
+  '<div class="rs"><h3>Performance scores</h3><div class="sg2">'+boxes+'</div><div style="font-size:.79rem;color:#666;margin-top:8px">Avg time/question: <strong>'+r.avgTime+'s</strong> &nbsp;&middot;&nbsp; Timed out: <strong>'+r.timedOut+'/25</strong></div></div>'+
+  '<div class="rs"><h3>Executive summary</h3><p class="para">'+xe(r.executiveSummary)+'</p></div>'+
+  '<div class="rs"><h3>Performance analysis</h3>'+analysis+'</div>'+
+  '<div class="rs"><h3>Skillset analysis</h3><div class="dlbl">Strengths</div><div class="tagrow" style="margin-bottom:11px">'+stags+'</div><div class="dlbl">Knowledge gaps</div><div class="tagrow">'+gtags+'</div></div>'+
+  '<div class="rs"><h3>Mouldability assessment</h3><div class="mbadge '+mc+'">Mouldability: '+xe(r.mouldability)+'</div><p class="para">'+xe(r.mouldabilityReason)+'</p>'+mplan+'</div>'+
+  '<div class="rs"><h3>Overall recommendation</h3><div class="rbox '+rc+'"><div class="rt">'+xe(r.recommendation)+'</div><div class="rb">'+xe(r.recommendationReason)+'</div></div></div>'+
+  '<div class="arow">'+
+  '<button class="adl" onclick="dlPDF()">&#11015; Download PDF Report</button>'+
+  '<button class="anw" onclick="resetAll()">+ New Interview</button>'+
+  '</div></div></div>';
+}
+
+function render(){
+  if(ph==='welcome')rWelcome();
+  else if(ph==='info')rInfo();
+  else if(ph==='genA')rLoad('Generating Part A Questions','Building 10 General Engineering questions…');
+  else if(ph==='qA'){var q=qA[cq];rQ(q,'Part A — General Engineering','pi-a',cq+1,10,((cq+1)/25*100).toFixed(1));startT();}
+  else if(ph==='aDone')rADone();
+  else if(ph==='subSel')rSub();
+  else if(ph==='genBC')rLoad('Generating Part B & C Questions','Building 10 questions on '+sub+' and 5 Aptitude…');
+  else if(ph==='qBC'){var q2=qBC[cq],isB=cq<10,lbl=isB?('Part B — '+sub.split(' ').slice(0,3).join(' ')):'Part C — Aptitude',pcls=isB?'pi-b':'pi-c',qn=isB?cq+1:cq-9,tot=isB?10:5;rQ(q2,lbl,pcls,qn,tot,((10+cq+1)/25*100).toFixed(1));startT();}
+  else if(ph==='analyzing')rLoad('Analysing Performance','Generating detailed faculty evaluation report…');
+  else if(ph==='report')rReport();
+}
+
+function po(el,i){sel=i;document.querySelectorAll('.ob').forEach(function(b){b.classList.remove('on');});el.classList.add('on');var b=document.getElementById('sb');if(b)b.disabled=false;}
+function sa(){clearInterval(tmr);adv(sel);}
+function ps(el,i){sub=SUBS[i];document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('on');});el.classList.add('on');var b=document.getElementById('ssb');if(b)b.disabled=false;}
+function cs(){ph='genBC';render();setTimeout(doBC,100);}
+function resetAll(){ph='welcome';cd=null;sub='';qA=[];qBC=[];cq=0;sel=null;aA=[];aBC=[];rep=null;scA=0;tv=60;clearInterval(tmr);render();}
+
+function dlPDF(){
+  var r=rep,dt=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var jsPDF=window.jspdf.jsPDF,doc=new jsPDF(),W=210,M=18,CW=W-M*2,y=15;
+  function ft(s,x,yy,sz,b,cl,al){doc.setFontSize(sz||10);doc.setFont('helvetica',b?'bold':'normal');doc.setTextColor.apply(doc,cl||[40,40,40]);al==='center'?doc.text(s,W/2,yy,{align:'center'}):doc.text(s,x,yy);}
+  function wp(t,x,yy,mw){doc.splitTextToSize(t,mw).forEach(function(l){if(yy>268){doc.addPage();yy=20;}ft(l,x,yy,9.5,false,[80,80,80]);yy+=5;});return yy;}
+  function sh(ti,yy){doc.setFillColor(4,44,83);doc.rect(M,yy-4,CW,7,'F');ft(ti,M+2,yy+.5,9.5,true,[255,255,255]);return yy+7;}
+  doc.setFillColor(4,44,83);doc.rect(0,0,W,30,'F');doc.setFillColor(186,117,23);doc.rect(0,28,W,2.5,'F');
+  ft('KLE TECHNOLOGICAL UNIVERSITY, HUBBALLI',W/2,10,9.5,true,[250,199,117],'center');
+  ft('Dept. of Electronics & Communication Engineering',W/2,17,9,false,[176,196,222],'center');
+  ft('Faculty Technical Interview — Evaluation Report  ·  Confidential',W/2,24,8,false,[176,196,222],'center');
+  y=38;y=sh('CANDIDATE INFORMATION',y)+4;
+  [['Name',cd.name],['Degree',cd.degree],['Teaching Exp.',cd.ty+' yr'],['Industry Exp.',cd.iy+' yr'],['Nationality',cd.nat],['Part B Subject',sub]].forEach(function(kv){ft(kv[0]+':',M,y,9,true,[80,80,80]);ft(kv[1],M+46,y,9);y+=5.5;});
+  y+=4;y=sh('PERFORMANCE SCORES',y)+5;
+  var cs=[M,M+62,M+98,M+130,M+160];
+  ['Section','Max','Score','%','Level'].forEach(function(h,i){ft(h,cs[i],y,8.5,true,[80,80,80]);});
+  doc.setDrawColor(200,200,200);doc.line(M,y+2,W-M,y+2);y+=6;
+  function lv(s,m){var p=s/m;return p>=.8?'Excellent':p>=.6?'Good':p>=.4?'Average':'Needs Focus';}
+  [['Part A: General Engineering','10',''+r.sA,r.sA*10+'%',lv(r.sA,10)],['Part B: '+sub.substring(0,18),'10',''+r.sB,r.sB*10+'%',lv(r.sB,10)],['Part C: Aptitude','5',''+r.sC,r.sC*20+'%',lv(r.sC,5)],['TOTAL','25',''+r.total,Math.round(r.total/25*100)+'%',lv(r.total,25)]].forEach(function(row,ri){if(ri===3){doc.setFillColor(240,244,248);doc.rect(M,y-3.5,CW,6,'F');}row.forEach(function(cell,ci){ft(cell,cs[ci],y,9,ri===3,ri===3?[4,44,83]:[50,50,50]);});y+=6.5;});
+  ft('Avg time/question: '+r.avgTime+'s  ·  Timed out: '+r.timedOut+'/25',M,y+1,8,false,[120,120,120]);y+=9;
+  if(y>240){doc.addPage();y=20;}y=sh('EXECUTIVE SUMMARY',y)+5;y=wp(r.executiveSummary,M,y,CW)+6;
+  if(y>200){doc.addPage();y=20;}y=sh('PERFORMANCE ANALYSIS',y)+5;
+  [['Part A — General Engineering:',r.partAAnalysis],['Part B — '+sub+':',r.partBAnalysis],['Part C — Aptitude:',r.partCAnalysis],['Time Management:',r.timeManagement]].forEach(function(pair){if(y>250){doc.addPage();y=20;}ft(pair[0],M,y,9,true,[4,44,83]);y+=5;y=wp(pair[1],M,y,CW)+4;});
+  y+=2;if(y>200){doc.addPage();y=20;}y=sh('SKILLSET ANALYSIS',y)+5;
+  ft('Strengths:',M,y,9,true);y+=5;r.strengths.forEach(function(s){ft('• '+s,M+3,y,9,false,[22,100,52]);y+=5;});
+  y+=2;ft('Knowledge Gaps:',M,y,9,true);y+=5;r.gaps.forEach(function(g){ft('• '+g,M+3,y,9,false,[153,27,27]);y+=5;});
+  y+=5;if(y>200){doc.addPage();y=20;}y=sh('MOULDABILITY & DEVELOPMENT PLAN',y)+5;
+  var mc2={Yes:[22,100,52],Partially:[146,64,14],No:[153,27,27]}[r.mouldability]||[80,80,80];
+  ft('Mouldability: '+r.mouldability,M,y,11,true,mc2);y+=7;y=wp(r.mouldabilityReason,M,y,CW)+5;
+  if(r.mouldability!=='No'){ft('3-Month Development Plan:',M,y,9.5,true);y+=6;[['Month 1 — Priority:',r.month1,[4,44,83]],['Month 2 — Development:',r.month2,[12,68,124]],['Month 3 — Consolidation:',r.month3,[24,90,160]]].forEach(function(t){if(y>250){doc.addPage();y=20;}ft(t[0],M,y,9,true,t[2]);y+=5;t[1].forEach(function(it){ft('→ '+it,M+5,y,9);y+=4.8;});y+=3;});}
+  y+=4;if(y>220){doc.addPage();y=20;}y=sh('OVERALL RECOMMENDATION',y)+5;
+  var rc2={'Highly Recommended':[22,100,52],'Recommended':[3,105,161],'Recommended with Conditions':[186,117,23],'Not Recommended':[153,27,27]}[r.recommendation]||[80,80,80];
+  ft(r.recommendation,M,y,12,true,rc2);y+=7;wp(r.recommendationReason,M,y,CW);
+  var pg=doc.internal.getNumberOfPages();
+  for(var p=1;p<=pg;p++){doc.setPage(p);doc.setFontSize(7.5);doc.setTextColor(155,155,155);doc.text('KLE Technological University — ECE Dept.  ·  Faculty Interview Report  ·  '+dt+'  ·  Page '+p+' of '+pg,W/2,292,{align:'center'});doc.setDrawColor(205,205,205);doc.line(M,288,W-M,288);}
+  doc.save('KLE_ECE_Interview_'+cd.name.replace(/\s+/g,'_')+'_'+dt.replace(/[\s,]/g,'_')+'.pdf');
+}
+render();
+</script>
+</body>
+</html>
