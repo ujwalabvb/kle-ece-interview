@@ -143,7 +143,7 @@ var STORE_KEY='kle_ece_admin';
 var BASE_URL=window.location.origin+window.location.pathname;
 
 // State
-var phase='boot', apiKey='', candName='', sub='';
+var phase='boot', apiKey='', candName='', candDeg='', candTy='', candIy='', candNat='', sub='';
 var qA=[], qBC=[], cq=0, selOpt=null;
 var aA=[], aBC=[], rep=null, tmr=null, tv=60, scA=0;
 
@@ -265,7 +265,8 @@ async function doGenRep() {
         var pf=allQ.map(function(q,i){return{part:q.part,type:q.type,q:q.question,given:allA[i].s!==null?so(q.options[allA[i].s]):'[timed out]',correct:so(q.options[q.correct]),ok:allA[i].s===q.correct,sec:allA[i].t};});
         var txt = await ai(
             'Senior ECE faculty evaluator at KLE Technological University.\n' +
-            'CANDIDATE: '+candName+' | Part B Subject: '+sub+'\n' +
+            'CANDIDATE: '+candName+' | '+candDeg+' | Teaching: '+candTy+'yr | Industry: '+candIy+'yr | '+candNat+'\n' +
+            'Part B Subject: '+sub+'\n' +
             'SCORES: A='+sA+'/10, B='+sB+'/10, C='+sC+'/5, Total='+tot+'/25, AvgTime='+avgT+'s, TimedOut='+to+'\n' +
             'RESPONSES: '+JSON.stringify(pf)+'\n' +
             'Return ONLY valid JSON:\n' +
@@ -452,27 +453,49 @@ function waShare(en,eu){
 function adminLogout(){apiKey='';phase='landing';render();}
 
 function rCandStart(){
+    var degs=DEGS.map(function(d){return'<option value="'+d+'">'+d+'</option>';}).join('');
     document.getElementById('app').innerHTML=
     '<div class="page"><div class="card">'+
-    '<div class="bnr"><div class="sub">KLE Technological University</div>'+
-    '<h1>Welcome'+(candName?', '+xe(candName):'')+'</h1>'+
-    '<p>ECE Faculty Technical Interview — Automated Assessment</p></div>'+
+    '<div class="bnr"><div class="sub">KLE Technological University, Hubballi</div>'+
+    '<h1>Candidate Details</h1>'+
+    '<p>Department of Electronics &amp; Communication Engineering</p></div>'+
     '<div class="bd">'+
     '<div class="info-box"><p>'+
     '<strong>Interview Structure:</strong><br>'+
-    '&#8226; Part A — 10 General Engineering questions (starts immediately)<br>'+
-    '&#8226; Part B — 10 questions on your chosen ECE subject<br>'+
-    '&#8226; Part C — 5 Aptitude &amp; Reasoning questions<br>'+
+    '&#8226; Part A &mdash; 10 General Engineering questions<br>'+
+    '&#8226; Part B &mdash; 10 questions on your chosen ECE subject<br>'+
+    '&#8226; Part C &mdash; 5 Aptitude questions<br>'+
     '&#8226; 1 minute per question &nbsp;&middot;&nbsp; 25 minutes total'+
     '</p></div>'+
-    (!candName?'<div class="fg"><label>Your Full Name</label><input id="cnm" placeholder="Enter your full name"/></div>':'')+
-    '<button class="btn btn-p" onclick="startInterview()">Start Interview &rarr;</button>'+
+    '<div class="fg"><label>Full Name</label><input id="cnm" value="'+xe(candName)+'" placeholder="Your full name" oninput="ck2()"/></div>'+
+    '<div class="fg"><label>Highest Degree Achieved</label><select id="cdeg" onchange="ck2()"><option value="">Select degree&hellip;</option>'+degs+'</select></div>'+
+    '<div class="fr">'+
+    '<div class="fg"><label>Teaching Experience (Years)</label><input id="cty" type="number" min="0" max="40" placeholder="0" oninput="ck2()"/></div>'+
+    '<div class="fg"><label>Industry Experience (Years)</label><input id="ciy" type="number" min="0" max="40" placeholder="0" oninput="ck2()"/></div>'+
+    '</div>'+
+    '<div class="fg"><label>Nationality</label><input id="cnat" placeholder="e.g. Indian" oninput="ck2()"/></div>'+
+    '<button id="cstartbtn" class="btn btn-p" disabled onclick="startInterview()">Submit &amp; Start Interview &rarr;</button>'+
     '</div></div></div>';
+}
+
+function ck2(){
+    var n=document.getElementById('cnm'),d=document.getElementById('cdeg'),
+        ty=document.getElementById('cty'),iy=document.getElementById('ciy'),
+        nat=document.getElementById('cnat'),b=document.getElementById('cstartbtn');
+    if(b)b.disabled=!(n&&n.value.trim()&&d&&d.value&&ty&&ty.value!==''&&iy&&iy.value!==''&&nat&&nat.value.trim());
 }
 
 function startInterview(){
     var nm=document.getElementById('cnm');
-    if(nm){if(!nm.value.trim()){alert('Please enter your name');return;}candName=nm.value.trim();}
+    var deg=document.getElementById('cdeg');
+    var ty=document.getElementById('cty');
+    var iy=document.getElementById('ciy');
+    var nat=document.getElementById('cnat');
+    if(nm&&nm.value.trim()) candName=nm.value.trim();
+    if(deg&&deg.value) candDeg=deg.value;
+    if(ty&&ty.value!=='') candTy=ty.value;
+    if(iy&&iy.value!=='') candIy=iy.value;
+    if(nat&&nat.value.trim()) candNat=nat.value.trim();
     phase='genA';render();setTimeout(doGenA,150);
 }
 
@@ -598,7 +621,7 @@ function dlPDF(){
     ft('Dept. of Electronics & Communication Engineering',W/2,17,9,false,[176,196,222],'center');
     ft('Faculty Technical Interview — Evaluation Report  ·  Confidential',W/2,24,8,false,[176,196,222],'center');
     y=38;y=sh('CANDIDATE INFORMATION',y)+4;
-    [['Name',candName],['Part B Subject',sub],['Interview Date',dt]].forEach(function(kv){ft(kv[0]+':',M,y,9,true,[80,80,80]);ft(kv[1],M+46,y,9);y+=5.5;});
+    [['Name',candName],['Highest Degree',candDeg],['Teaching Exp.',candTy+' yr'],['Industry Exp.',candIy+' yr'],['Nationality',candNat],['Part B Subject',sub],['Interview Date',dt]].forEach(function(kv){ft(kv[0]+':',M,y,9,true,[80,80,80]);ft(kv[1],M+46,y,9);y+=5.5;});
     y+=4;y=sh('PERFORMANCE SCORES',y)+5;
     var cs=[M,M+62,M+98,M+130,M+160];
     ['Section','Max','Score','%','Level'].forEach(function(h,i){ft(h,cs[i],y,8.5,true,[80,80,80]);});
